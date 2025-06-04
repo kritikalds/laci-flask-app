@@ -31,6 +31,8 @@ class Appointment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # idegen kulcs!
     date_time = db.Column(db.DateTime, unique=True, nullable=False)
 
+    user = db.relationship('User', backref='appointments')
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))

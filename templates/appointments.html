@@ -13,7 +13,7 @@
 <h3>Összes foglalt időpont</h3>
 <ul>
   {% for app in appointments %}
-    <li>{{ app.date_time }} - Foglaló ID: {{ app.user_id }}</li>
+    <li>{{ app.date_time.strftime('%Y-%m-%d %H:%M:%S') }} - {{ app.user.full_name }} ({{ app.id }})</li>
   {% else %}
     <li>Nem található foglalás.</li>
   {% endfor %}

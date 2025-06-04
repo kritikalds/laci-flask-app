@@ -2,12 +2,11 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ez_egy_very_secret_key'
-
-# ✅ PostgreSQL kapcsolat Render.com-ról
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://laciprojekt_user:8izs5VoqaKrcOBjNYYTO3gXrvXAWnPKZ@dpg-d100am3ipnbc738chka0-a.frankfurt-postgres.render.com:5432/laciprojekt'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -16,21 +15,21 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 bcrypt = Bcrypt(app)
 
-# --- Adatbázis modellek ---
-
 class User(db.Model, UserMixin):
-    __tablename__ = 'users'  # 👉 ez a meglévő tábla neve a PostgreSQL-ben
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), nullable=False)  # létezik az adatbázisban
+    name = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     admin = db.Column(db.Boolean, default=False)
 
 class Appointment(db.Model):
+    __tablename__ = 'appointments'
+
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)  # Nem használunk idegen kulcsot, mert nincs users.id-re utalás explicit
-    date_time = db.Column(db.String(100), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # idegen kulcs!
+    date_time = db.Column(db.DateTime, unique=True, nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -99,4 +98,6 @@ def appointments():
     return render_template('appointments.html', appointments=appointments)
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

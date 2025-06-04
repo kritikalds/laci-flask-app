@@ -86,7 +86,13 @@ def logout():
 @login_required
 def appointments():
     if request.method == 'POST':
-        date_time = request.form['date_time']
+        date_time_str = request.form['date_time']  # pl. '2025-06-05 14:00'
+        try:
+            date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
+        except ValueError:
+            flash('Hibás időpont formátum. Használd: ÉÉÉÉ-HH-NN ÓÓ:PP', 'danger')
+            return redirect(url_for('appointments'))
+
         if Appointment.query.filter_by(date_time=date_time).first():
             flash('Ez az időpont már foglalt.', 'danger')
         else:
@@ -94,6 +100,7 @@ def appointments():
             db.session.add(appointment)
             db.session.commit()
             flash('Időpont sikeresen lefoglalva!', 'success')
+
     appointments = Appointment.query.all()
     return render_template('appointments.html', appointments=appointments)
 

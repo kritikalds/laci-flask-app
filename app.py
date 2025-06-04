@@ -103,8 +103,18 @@ def appointments():
             db.session.commit()
             flash('Időpont sikeresen lefoglalva!', 'success')
 
-    appointments = Appointment.query.all()
+    # Lekérjük az összes időpontfoglalást, és előtöltjük a user adatokat
+    appointments = Appointment.query.join(User).add_entity(User).all()
+    # appointments most lista lesz: [(Appointment objektum, User objektum), ...]
+
+    # Kényelmesebben a sablonba küldhetjük csak a Appointment objektumokat, mert van user kapcsolat
+    # így ez is működik: appointments = Appointment.query.all()
+    # A sablonban meg hívjuk app.user.name-t
+
+    appointments = Appointment.query.order_by(Appointment.date_time).all()
+
     return render_template('appointments.html', appointments=appointments)
+
 
 if __name__ == "__main__":
     with app.app_context():

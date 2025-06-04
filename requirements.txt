@@ -3,6 +3,4 @@ Flask-SQLAlchemy==3.1.1
 gunicorn==21.2.0
 psycopg2-binary==2.9.9
 Flask-Login==0.6.3
-ModuleNotFoundError: No module named 'flask_bcrypt'
-==> Exited with status 1
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+Flask-Bcrypt==1.0.1

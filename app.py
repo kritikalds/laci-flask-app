@@ -91,9 +91,8 @@ def appointments():
     appointments = Appointment.query.all()
     return render_template('appointments.html', appointments=appointments)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
-
-with app.app_context():
-    db.create_all()
 

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Időpontfoglalás{% endblock %}
+{% block content %}
+<h2>Időpontfoglalás</h2>
+<form method="POST">
+  <div class="mb-3">
+    <label for="date_time" class="form-label">Időpont (pl. 2025-06-10 14:00)</label>
+    <input type="text" class="form-control" id="date_time" name="date_time" required>
+  </div>
+  <button type="submit" class="btn btn-success">Foglalás</button>
+</form>
+
+<h3>Összes foglalt időpont</h3>
+<ul>
+  {% for app in appointments %}
+    <li>{{ app.date_time }} - Foglaló ID: {{ app.user_id }}</li>
+  {% else %}
+    <li>Nem található foglalás.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
